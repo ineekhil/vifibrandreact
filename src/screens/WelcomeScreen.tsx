@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StatusBar,
+  Linking,
+  Alert,
 } from 'react-native';
 import { useTheme } from '../shared/theme';
 import { useNavigation } from '@react-navigation/native';
@@ -36,6 +38,19 @@ const WelcomeScreen: React.FC = () => {
 
   const handleVifiIconPress = () => {
     navigation.navigate('Brands');
+  };
+
+  const handleSocialMediaPress = async (url: string) => {
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert('Error', 'Cannot open this link');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to open link');
+    }
   };
 
   return (
@@ -91,50 +106,70 @@ const WelcomeScreen: React.FC = () => {
           </Text>
           
           <View style={styles.socialIconsContainer}>
-            <View style={styles.socialIconItem}>
+            <TouchableOpacity 
+              style={styles.socialIconItem}
+              onPress={() => handleSocialMediaPress('https://www.linkedin.com/in/ineekhil/')}
+              activeOpacity={0.7}
+            >
               {isDark ? (
                 <LinkedInIconDark width={64} height={48} />
               ) : (
                 <LinkedInIcon width={64} height={48} />
               )}
               <Text style={[styles.socialLabel, { color: theme.textSecondary }]}>LinkedIn</Text>
-            </View>
+            </TouchableOpacity>
             
-            <View style={styles.socialIconItem}>
+            <TouchableOpacity 
+              style={styles.socialIconItem}
+              onPress={() => handleSocialMediaPress('https://github.com/ineekhil')}
+              activeOpacity={0.7}
+            >
               {isDark ? (
                 <GithubIconDark width={65} height={48} />
               ) : (
                 <GithubIcon width={65} height={48} />
               )}
               <Text style={[styles.socialLabel, { color: theme.textSecondary }]}>Github</Text>
-            </View>
+            </TouchableOpacity>
             
-            <View style={styles.socialIconItem}>
+            <TouchableOpacity 
+              style={styles.socialIconItem}
+              onPress={() => handleSocialMediaPress('tel:7666420421')}
+              activeOpacity={0.7}
+            >
               {isDark ? (
                 <PhoneIconDark width={65} height={48} />
               ) : (
                 <PhoneIcon width={65} height={48} />
               )}
               <Text style={[styles.socialLabel, { color: theme.textSecondary }]}>Phone</Text>
-            </View>
+            </TouchableOpacity>
             
-            <View style={styles.socialIconItem}>
+            <TouchableOpacity 
+              style={styles.socialIconItem}
+              onPress={() => handleSocialMediaPress('https://www.instagram.com/i.neekhil')}
+              activeOpacity={0.7}
+            >
               {isDark ? (
                 <InstagramIconDark width={65} height={48} />
               ) : (
                 <InstagramIcon width={65} height={48} />
               )}
               <Text style={[styles.socialLabel, { color: theme.textSecondary }]}>Instagram</Text>
-            </View>
+            </TouchableOpacity>
             
-            <View style={styles.socialIconItem}>
+            <TouchableOpacity 
+              style={styles.socialIconItem}
+              onPress={() => handleSocialMediaPress('https://wa.me/917666420421')}
+              activeOpacity={0.7}
+            >
               {isDark ? (
                 <WhatsappIconDark width={65} height={48} />
               ) : (
                 <WhatsappIcon width={65} height={48} />
               )}
               <Text style={[styles.socialLabel, { color: theme.textSecondary }]}>Whatsapp</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
