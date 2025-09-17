@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/DMSerifDisplay-Italic.ttf",
+      "sha1": "72ca98f21702bb6a8790e68d2acce354bacfa8d5"
+    },
+    {
+      "path": "src/assets/fonts/DMSerifDisplay-Regular.ttf",
+      "sha1": "efabe55b7e799d9674a691f994accadd19aaa588"
+    },
+    {
+      "path": "src/assets/fonts/Nunito-VariableFont_wght.ttf",
+      "sha1": "21dd5ae8c31a1825d210234af3b0c04a882de724"
+    }
+  ]
+}

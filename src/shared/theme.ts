@@ -21,8 +21,8 @@ const lightTheme: Theme = {
 const darkTheme: Theme = {
   background: '#000000',
   surface: '#121212',
-  textPrimary: '#f2f2f2',
-  textSecondary: '#b3b3b3',
+  textPrimary: '#ffffff',
+  textSecondary: '#e0e0e0',
   border: '#2a2a2a',
   accent: '#22b6d2',
 };

@@ -15,8 +15,10 @@ const SegmentedControl = ({ segments, activeIndex = 0, onSegmentChange }: {
     onSegmentChange?.(index);
   };
 
+  const isDark = theme.background === '#000000';
+  
   return (
-    <View style={[styles.wrapper, { backgroundColor: '#f5f5f5' }]}>
+    <View style={[styles.wrapper, { backgroundColor: isDark ? '#2a2a2a' : '#f5f5f5' }]}>
       {segments.map((label, index) => {
         const selected = index === active;
         return (
@@ -24,14 +26,14 @@ const SegmentedControl = ({ segments, activeIndex = 0, onSegmentChange }: {
             key={label}
             style={[
               styles.segment, 
-              selected && styles.activeSegment
+              selected && [styles.activeSegment, { backgroundColor: isDark ? '#ffffff' : '#ffffff' }]
             ]}
             onPress={() => handlePress(index)}
             activeOpacity={0.8}
           >
             <Text style={[
               styles.segmentText, 
-              { color: selected ? '#000000' : '#666666' }
+              { color: selected ? (isDark ? '#000000' : '#000000') : (isDark ? '#ffffff' : '#666666') }
             ]}>
               {label}
             </Text>
@@ -47,7 +49,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 6,
     borderRadius: 16,
-    backgroundColor: '#f5f5f5',
   },
   segment: {
     flex: 1,
