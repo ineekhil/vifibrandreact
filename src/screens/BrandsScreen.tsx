@@ -1,37 +1,44 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { ScrollView, View, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import Header from '../shared/Header.tsx';
 import BrandChip from '../shared/BrandChip.tsx';
 import TaskCard from '../shared/TaskCard.tsx';
 import EventItem from '../shared/EventItem.tsx';
 import TrendingTaskCard from '../shared/TrendingTaskCard.tsx';
+import ActiveCampaignCard from '../shared/ActiveCampaignCard.tsx';
+import AssignedTaskCard from '../shared/AssignedTaskCard.tsx';
 import { useTheme } from '../shared/theme';
 import Svg, { Path } from 'react-native-svg';
+import { RootStackParamList } from '../navigation/AppNavigator';
+
+type BrandsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Brands'>;
 
 const BrandsScreen = () => {
   const theme = useTheme();
+  const navigation = useNavigation<BrandsScreenNavigationProp>();
+
+  const handleBackPress = () => {
+    navigation.navigate('Welcome');
+  };
+
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.background }]} contentContainerStyle={styles.content}>
-      <Header title="Brands" showSegmentedControl={true} />
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top']}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
+        <Header title="Brands" showSegmentedControl={true} onBackPress={handleBackPress} />
 
       <Section title="Trending tasks">
         <Carousel />
       </Section>
 
       <Section title="Active campaigns" showCount={7}>
-        <View style={styles.brandsRow}>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <BrandChip key={i} label={i % 2 === 0 ? 'blinkit' : 'spotify'} />
-          ))}
-        </View>
+        <ActiveCampaignsCarousel />
       </Section>
 
       <Section title="Assigned tasks">
-        <View style={styles.assignedGrid}>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <TaskCard key={i} brand={i % 2 === 0 ? 'Spotify' : 'Muscle Blaze'} type={i % 2 === 0 ? 'Reels on Instagram' : 'Post on Instagram'} />
-          ))}
-        </View>
+        <AssignedTasksGrid />
       </Section>
 
       <Section title="Events for you">
@@ -60,38 +67,8 @@ const BrandsScreen = () => {
         </View>
       </Section>
 
-      <View style={styles.bottomSpacer} />
-      
-      {/* Bottom Navigation */}
-      <View style={[styles.bottomNav, { backgroundColor: theme.background }]}>
-        <TouchableOpacity style={styles.navItem}>
-          <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <Path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill={theme.textPrimary}/>
-          </Svg>
-          <View style={[styles.navIndicator, { backgroundColor: theme.textPrimary }]} />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <Path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#FF6B35"/>
-          </Svg>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <Path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill={theme.textPrimary}/>
-          </Svg>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <View style={[styles.profilePic, { backgroundColor: theme.textSecondary }]}>
-            <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <Path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill={theme.background}/>
-            </Svg>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -112,11 +89,49 @@ const Section = ({ title, children, showCount }: { title: string; children: Reac
   );
 };
 
-const Carousel = () => {
-  const screenWidth = Dimensions.get('window').width;
-  const sidePeek = 24; // how much of neighbors to show
-  const itemWidth = screenWidth - sidePeek * 2;
-  const data = Array.from({ length: 6 }).map((_, i) => ({ id: `trend-${i}` }));
+const AssignedTasksGrid = () => {
+  const assignedTasksData = [
+    { id: '1', brand: 'spotify' as const, taskType: 'reels' as const, title: 'Spotify', description: 'How Spotify shapes your moments, memories, and every beat of your life.' },
+    { id: '2', brand: 'muscleblaze' as const, taskType: 'post' as const, title: 'Muscle Blaze', description: 'Fuel your grind—post your gains on Instagram.' },
+    { id: '3', brand: 'spotify' as const, taskType: 'reels' as const, title: 'Spotify', description: 'How Spotify shapes your moments, memories, and every beat of your life.' },
+    { id: '4', brand: 'muscleblaze' as const, taskType: 'post' as const, title: 'Muscle Blaze', description: 'Fuel your grind—post your gains on Instagram.' },
+    { id: '5', brand: 'spotify' as const, taskType: 'reels' as const, title: 'Spotify', description: 'How Spotify shapes your moments, memories, and every beat of your life.' },
+    { id: '6', brand: 'muscleblaze' as const, taskType: 'post' as const, title: 'Muscle Blaze', description: 'Fuel your grind—post your gains on Instagram.' },
+  ];
+
+  return (
+    <View style={styles.assignedGrid}>
+      {assignedTasksData.map((item) => (
+        <AssignedTaskCard
+          key={item.id}
+          brand={item.brand}
+          taskType={item.taskType}
+          title={item.title}
+          description={item.description}
+          onPress={() => {
+            console.log('Task pressed:', item.title);
+          }}
+        />
+      ))}
+    </View>
+  );
+};
+
+const ActiveCampaignsCarousel = () => {
+  const data = [
+    { id: '1', brand: 'blinkit' as const },
+    { id: '2', brand: 'spotify' as const },
+    { id: '3', brand: 'blinkit' as const },
+    { id: '4', brand: 'blinkit' as const },
+    { id: '5', brand: 'spotify' as const },
+    { id: '6', brand: 'blinkit' as const },
+    { id: '7', brand: 'spotify' as const },
+    { id: '8', brand: 'blinkit' as const },
+    { id: '9', brand: 'spotify' as const },
+    { id: '10', brand: 'blinkit' as const },
+    { id: '11', brand: 'spotify' as const },
+    { id: '12', brand: 'blinkit' as const },
+  ];
 
   return (
     <FlatList
@@ -124,21 +139,92 @@ const Carousel = () => {
       keyExtractor={(item) => item.id}
       horizontal
       showsHorizontalScrollIndicator={false}
-      snapToInterval={itemWidth}
-      snapToAlignment="start"
-      decelerationRate="fast"
-      contentContainerStyle={{ paddingHorizontal: sidePeek }}
-      renderItem={() => (
-        <View style={{ width: itemWidth }}>
-          <TrendingTaskCard width={itemWidth} />
-        </View>
+      contentContainerStyle={styles.campaignsContainer}
+      renderItem={({ item }) => (
+        <ActiveCampaignCard brand={item.brand} />
       )}
     />
   );
 };
 
+const Carousel = () => {
+  const screenWidth = Dimensions.get('window').width;
+  const cardWidth = 320;
+  const smallCardWidth = 310;
+  const cardSpacing = 4;
+  const data = Array.from({ length: 9 }).map((_, i) => ({ id: `trend-${i}` }));
+  const [scrollX, setScrollX] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+
+  const onScroll = (event: any) => {
+    setScrollX(event.nativeEvent.contentOffset.x);
+  };
+
+  const getCardStyle = (index: number) => {
+    const itemWidth = cardWidth + cardSpacing;
+    const centerOffset = (screenWidth - cardWidth) / 2;
+    const cardCenter = index * itemWidth + cardWidth / 2;
+    const screenCenter = scrollX + screenWidth / 2;
+    const distance = Math.abs(cardCenter - screenCenter);
+    
+    // Calculate scale and opacity based on distance
+    const maxDistance = itemWidth * 1.5;
+    const normalizedDistance = Math.min(distance / maxDistance, 1);
+    
+    const scale = 1 - (normalizedDistance * 0.08); // Scale from 1 to 0.92
+    const opacity = 1 - (normalizedDistance * 0.15); // Opacity from 1 to 0.85
+    
+    return {
+      transform: [{ scale }],
+      opacity,
+      width: scale > 0.98 ? cardWidth : smallCardWidth,
+    };
+  };
+
+  return (
+    <View style={styles.carouselContainer}>
+      <FlatList
+        ref={flatListRef}
+        data={data}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={cardWidth + cardSpacing}
+        snapToAlignment="center"
+        decelerationRate="normal"
+        onScroll={onScroll}
+        scrollEventThrottle={8}
+        contentContainerStyle={{
+          paddingHorizontal: (screenWidth - cardWidth) / 2,
+        }}
+        renderItem={({ item, index }) => {
+          const cardStyle = getCardStyle(index);
+          
+          return (
+            <View style={[
+              styles.carouselItem,
+              cardStyle,
+              {
+                marginRight: index < data.length - 1 ? cardSpacing : 0,
+              }
+            ]}>
+              <TrendingTaskCard 
+                width={cardStyle.width}
+                isSmallCard={cardStyle.width !== cardWidth}
+              />
+            </View>
+          );
+        }}
+      />
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollView: {
     flex: 1,
   },
   content: {
@@ -196,7 +282,7 @@ const styles = StyleSheet.create({
   assignedGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    justifyContent: 'space-between',
   },
   eventsList: {
     gap: 10,
@@ -226,36 +312,17 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 12,
   },
-  bottomSpacer: {
-    height: 24,
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#2a2a2a',
-  },
-  navItem: {
+  carouselContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
   },
-  navIndicator: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    marginTop: 4,
-  },
-  profilePic: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  carouselItem: {
     alignItems: 'center',
     justifyContent: 'center',
+    flex: 1,
+  },
+  campaignsContainer: {
+    paddingHorizontal: 4,
   },
 });
 

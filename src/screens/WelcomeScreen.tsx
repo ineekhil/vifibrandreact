@@ -40,6 +40,7 @@ const WelcomeScreen: React.FC = () => {
     navigation.navigate('Brands');
   };
 
+
   const handleSocialMediaPress = async (url: string) => {
     try {
       const supported = await Linking.canOpenURL(url);
