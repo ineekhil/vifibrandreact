@@ -10,6 +10,7 @@ import EventItem from '../shared/EventItem.tsx';
 import TrendingTaskCard from '../shared/TrendingTaskCard.tsx';
 import ActiveCampaignCard from '../shared/ActiveCampaignCard.tsx';
 import AssignedTaskCard from '../shared/AssignedTaskCard.tsx';
+import EventsList from '../shared/EventsList.tsx';
 import { useTheme } from '../shared/theme';
 import Svg, { Path } from 'react-native-svg';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -23,6 +24,7 @@ const BrandsScreen = () => {
   const handleBackPress = () => {
     navigation.navigate('Welcome');
   };
+
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top']}>
@@ -42,28 +44,21 @@ const BrandsScreen = () => {
       </Section>
 
       <Section title="Events for you">
-        <View style={styles.eventsList}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <EventItem key={i} title={i % 2 === 0 ? 'Spotify Refresher' : 'VF PARALLEL'} date="June 7 · 07:30 PM" location="Independence Brewing Co - Powai" />
-          ))}
-          <TouchableOpacity style={[styles.seeAllBtn, { backgroundColor: theme.textPrimary }]}>
-            <Text style={[styles.seeAllText, { color: theme.background }]}>See all →</Text>
-          </TouchableOpacity>
-        </View>
+        <EventsList />
       </Section>
 
       <Section title="Tasks">
         <View style={styles.tasksGrid}>
           {Array.from({ length: 6 }).map((_, i) => (
-            <TaskCard
+            <AssignedTaskCard
               key={i}
+              title="How Spotify shapes your moments, memories, and every beat of your life."
               brand="Spotify"
               type={i % 2 === 0 ? 'Photo' : 'Design'}
+              timeLeft={`${i + 1} week${i > 0 ? 's' : ''} to go`}
+              dueDate={`${15 + i} Jun, 11:59 PM`}
             />
           ))}
-          <TouchableOpacity style={[styles.seeAllBtnWide, { backgroundColor: theme.textPrimary }]}>
-            <Text style={[styles.seeAllText, { color: theme.background }]}>See all tasks →</Text>
-          </TouchableOpacity>
         </View>
       </Section>
 
@@ -294,18 +289,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#111',
     marginTop: 6,
-  },
-  seeAllBtnWide: {
-    alignSelf: 'stretch',
-    paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#111',
-    marginTop: 6,
-    alignItems: 'center',
-  },
-  seeAllText: {
-    color: '#fff',
-    fontWeight: '600',
   },
   tasksGrid: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from './theme';
 import Svg, { Path } from 'react-native-svg';
 
@@ -24,11 +24,26 @@ const TrendingTaskCard = ({
   brand = "Spotify",
   isSmallCard = false
 }: Props) => {
+  const [isMuted, setIsMuted] = useState(true);
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
   return (
     <View style={[styles.card, width ? { width } : null]}>
       <View style={styles.content}>
         <View style={styles.header}>
-          {/* Header content will go here */}
+          <Image
+            source={require('../assets/images/vfturf.png')}
+            style={styles.video}
+            resizeMode="cover"
+          />
+          <TouchableOpacity style={styles.muteButton} onPress={toggleMute}>
+            <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <Path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="white"/>
+            </Svg>
+          </TouchableOpacity>
         </View>
         
         <View style={styles.titleWrapper}>
@@ -96,6 +111,29 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     overflow: "hidden", // ensures border radius clips background
+    backgroundColor: "#000000", // Black background for video frame
+    position: "relative",
+  },
+  video: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+  },
+  muteButton: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
   },
 
   titleWrapper: {
