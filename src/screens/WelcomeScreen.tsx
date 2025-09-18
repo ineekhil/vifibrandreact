@@ -9,7 +9,7 @@ import {
   Linking,
   Alert,
 } from 'react-native';
-import { useTheme } from '../shared/theme';
+import { useTheme } from '../components/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -38,6 +38,10 @@ const WelcomeScreen: React.FC = () => {
 
   const handleVifiIconPress = () => {
     navigation.navigate('Brands');
+  };
+
+  const handleReactIconPress = () => {
+    navigation.navigate('ReactConcepts');
   };
 
 
@@ -85,12 +89,18 @@ const WelcomeScreen: React.FC = () => {
             ) : (
               <VifiIcon width={80} height={80} />
             )}
+            <Text style={[styles.iconLabel, { color: theme.textPrimary }]}>vifi brand</Text>
           </TouchableOpacity>
           
           {/* Right Icon - PirateIcon for both themes */}
-          <View style={styles.iconWrapper}>
+          <TouchableOpacity 
+            style={styles.iconWrapper}
+            onPress={handleReactIconPress}
+            activeOpacity={0.7}
+          >
             <PirateIcon width={80} height={80} />
-          </View>
+            <Text style={[styles.iconLabel, { color: theme.textPrimary }]}>react</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Dashed Separator with "or" */}
@@ -205,13 +215,22 @@ const styles = StyleSheet.create({
   iconsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     width: '100%',
     maxWidth: 200,
   },
   iconWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
+    flex: 1,
+  },
+  iconLabel: {
+    fontSize: 14,
+    fontFamily: 'Nunito-VariableFont_wght',
+    textAlign: 'center',
+    marginTop: 8,
+    fontWeight: '600',
+    width: '100%',
   },
   separatorContainer: {
     flexDirection: 'row',

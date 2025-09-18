@@ -57,7 +57,7 @@ const EventsList = () => {
 
   return (
     <View>
-      <View style={styles.card}>
+      <View style={[styles.card, { backgroundColor: theme.cardBackground, borderColor: theme.cardBorder }]}>
         {events.map((event, index) => (
           <View key={event.id}>
             <EventsCard
@@ -86,11 +86,9 @@ const EventsList = () => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     marginHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

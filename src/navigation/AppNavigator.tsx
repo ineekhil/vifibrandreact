@@ -5,12 +5,16 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import BrandsScreen from '../screens/BrandsScreen';
 import AllEventsScreen from '../screens/AllEventsScreen';
 import AllTasksScreen from '../screens/AllTasksScreen';
+import ReactConceptsScreen from '../screens/ReactConceptsScreen';
+import FetchApiScreen from '../screens/FetchApiScreen';
 
 export type RootStackParamList = {
   Welcome: undefined;
   Brands: undefined;
   AllEvents: undefined;
   AllTasks: undefined;
+  ReactConcepts: undefined;
+  FetchApi: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -28,6 +32,8 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="Brands" component={BrandsScreen} />
         <Stack.Screen name="AllEvents" component={AllEventsScreen} />
         <Stack.Screen name="AllTasks" component={AllTasksScreen} />
+        <Stack.Screen name="ReactConcepts" component={ReactConceptsScreen} />
+        <Stack.Screen name="FetchApi" component={FetchApiScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

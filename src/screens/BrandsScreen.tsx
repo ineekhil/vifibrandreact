@@ -1,19 +1,19 @@
-import React, { useRef, useState } from 'react';
-import { ScrollView, View, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import React, { useRef, useState, useCallback } from 'react';
+import { ScrollView, View, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Header from '../shared/Header.tsx';
-import BrandChip from '../shared/BrandChip.tsx';
-import TaskCard from '../shared/TaskCard.tsx';
-import EventItem from '../shared/EventItem.tsx';
-import TrendingTaskCard from '../shared/TrendingTaskCard.tsx';
-import ActiveCampaignCard from '../shared/ActiveCampaignCard.tsx';
-import AssignedTaskCard from '../shared/AssignedTaskCard.tsx';
-import EventsList from '../shared/EventsList.tsx';
-import { useTheme } from '../shared/theme';
-import Svg, { Path } from 'react-native-svg';
+import Header from '../components/Header.tsx';
+import TrendingTaskCard from '../components/TrendingTaskCard.tsx';
+import ActiveCampaignCard from '../components/ActiveCampaignCard.tsx';
+import AssignedTaskCard from '../components/AssignedTaskCard.tsx';
+import EventsList from '../components/EventsList.tsx';
+import { useTheme } from '../components/theme';
 import { RootStackParamList } from '../navigation/AppNavigator';
+
+// Constants
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const CARD_WIDTH = SCREEN_WIDTH * 0.8;
 
 type BrandsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Brands'>;
 
@@ -21,9 +21,21 @@ const BrandsScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation<BrandsScreenNavigationProp>();
 
-  const handleBackPress = () => {
-    navigation.navigate('Welcome');
-  };
+  React.useEffect(() => {
+    console.log('BrandsScreen mounted');
+    return () => {
+      console.log('BrandsScreen unmounted');
+    };
+  }, []);
+
+  const handleBackPress = useCallback(() => {
+    try {
+      navigation.navigate('Welcome');
+    } catch (error) {
+      console.error('Navigation error:', error);
+      Alert.alert('Error', 'Unable to navigate back. Please try again.');
+    }
+  }, [navigation]);
 
 
   return (
@@ -53,10 +65,9 @@ const BrandsScreen = () => {
             <AssignedTaskCard
               key={i}
               title="How Spotify shapes your moments, memories, and every beat of your life."
-              brand="Spotify"
-              type={i % 2 === 0 ? 'Photo' : 'Design'}
-              timeLeft={`${i + 1} week${i > 0 ? 's' : ''} to go`}
-              dueDate={`${15 + i} Jun, 11:59 PM`}
+              brand={i % 2 === 0 ? 'spotify' : 'muscleblaze'}
+              taskType={i % 2 === 0 ? 'reels' : 'post'}
+              description={`Task description ${i + 1}`}
             />
           ))}
         </View>
@@ -74,7 +85,7 @@ const Section = ({ title, children, showCount }: { title: string; children: Reac
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>{title}</Text>
         {showCount && (
-          <View style={styles.countBadge}>
+          <View style={[styles.countBadge, { backgroundColor: theme.statusColors.error }]}>
             <Text style={styles.countText}>{showCount}</Text>
           </View>
         )}
@@ -104,7 +115,14 @@ const AssignedTasksGrid = () => {
           title={item.title}
           description={item.description}
           onPress={() => {
-            console.log('Task pressed:', item.title);
+            try {
+              console.log('Task pressed:', item.title);
+              // TODO: Navigate to task details screen
+              // navigation.navigate('TaskDetails', { taskId: item.id });
+            } catch (error) {
+              console.error('Error handling task press:', error);
+              Alert.alert('Error', 'Unable to open task details. Please try again.');
+            }
           }}
         />
       ))}
@@ -240,7 +258,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   countBadge: {
-    backgroundColor: '#FF0000',
     borderRadius: 10,
     width: 20,
     height: 20,
@@ -253,42 +270,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  trendingRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  trendingCard: {
-    height: 160,
-    flex: 1,
-    backgroundColor: '#000',
-    borderRadius: 12,
-  },
-  trendingCardMuted: {
-    height: 160,
-    width: 80,
-    backgroundColor: '#ddd',
-    borderRadius: 12,
-  },
-  brandsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
   assignedGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-  },
-  eventsList: {
-    gap: 10,
-  },
-  seeAllBtn: {
-    alignSelf: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: '#111',
-    marginTop: 6,
   },
   tasksGrid: {
     flexDirection: 'row',

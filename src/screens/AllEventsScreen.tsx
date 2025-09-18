@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Header from '../shared/Header.tsx';
-import EventsCard from '../shared/EventsCard.tsx';
+import Header from '../components/Header.tsx';
+import EventsCard from '../components/EventsCard.tsx';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { useTheme } from '../components/theme';
+import { Event } from '../types';
 
 type AllEventsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AllEvents'>;
 
@@ -12,11 +14,13 @@ interface Props {
 }
 
 const AllEventsScreen = ({ navigation }: Props) => {
+  const theme = useTheme();
+  
   const handleBackPress = () => {
     navigation.goBack();
   };
 
-  const events = [
+  const events: Event[] = [
     {
       id: '1',
       title: 'Spotify Refresher',
@@ -155,10 +159,10 @@ const AllEventsScreen = ({ navigation }: Props) => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.screenBackground }]}>
       <Header title="All Events" onBackPress={handleBackPress} showSegmentedControl={false} showRightIcons={false} />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
-        <View style={styles.eventsContainer}>
+        <View style={[styles.eventsContainer, { backgroundColor: theme.cardBackground, borderColor: theme.cardBorder }]}>
           {events.map((event, index) => (
             <View key={event.id}>
               <EventsCard
@@ -183,7 +187,6 @@ const AllEventsScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   scrollView: {
     flex: 1,
@@ -192,11 +195,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   eventsContainer: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     marginHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
     alignSelf: 'center',
   },
   separator: {

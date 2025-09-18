@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTheme } from './theme';
 import Svg, { Path } from 'react-native-svg';
 
@@ -21,14 +21,23 @@ const AssignedTaskCard = ({
   const theme = useTheme();
   const isDark = theme.background === '#000000';
 
+  const handlePress = () => {
+    try {
+      if (onPress) {
+        onPress();
+      }
+    } catch (error) {
+      console.error('Error handling task card press:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      {/* Top Section - Brand Background */}
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
       <View style={[
         styles.topSection, 
         { backgroundColor: brand === 'spotify' ? '#1DB954' : '#FF6B35' }
       ]}>
-        {/* Brand Logo and Name */}
         <View style={styles.brandHeader}>
           {brand === 'spotify' ? (
             <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -39,10 +48,11 @@ const AssignedTaskCard = ({
               <Text style={styles.mbText}>MB</Text>
             </View>
           )}
-          <Text style={styles.brandName}>{brand === 'spotify' ? 'Spotify' : 'MUSCLEBLAZE'}</Text>
+          <Text style={styles.brandName}>
+            {brand === 'spotify' ? 'Spotify' : 'MUSCLEBLAZE'}
+          </Text>
         </View>
 
-        {/* Task Type Banner */}
         <View style={styles.taskBanner}>
           <View style={styles.taskIcon}>
             {taskType === 'reels' ? (
@@ -61,7 +71,6 @@ const AssignedTaskCard = ({
         </View>
       </View>
 
-      {/* Bottom Section - Content */}
       <View style={[styles.bottomSection, { backgroundColor: isDark ? '#ffffff' : '#ffffff' }]}>
         <Text style={[styles.title, { color: isDark ? '#000000' : '#000000' }]}>{title}</Text>
         <Text style={[styles.description, { color: isDark ? '#666666' : '#666666' }]}>{description}</Text>
